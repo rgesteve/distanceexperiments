@@ -6,6 +6,15 @@
 #include <vector>
 #include <cstdlib>
 #include <numeric>
+#include <benchmark/benchmark.h> // Non-standard header
+
+auto gen_vec(int n) {
+  std::vector<int> v;
+  for (int i = 0; i < n; ++i) { 
+    v.push_back(i); 
+  }
+  return v;
+}
 
 auto linear_search(const std::vector<int>& vals, int key) {
   for (const auto& v : vals) {
@@ -35,6 +44,7 @@ auto binary_search(const std::vector<int>& a, int key) {
   return false;
 }
 
+#ifdef STANDALONE_MAIN
 int main(int argc, char* argv[])
 {
   using namespace std;
@@ -59,4 +69,15 @@ int main(int argc, char* argv[])
   
   return EXIT_SUCCESS;
 }
+#endif
 
+static void bm_linear_search(benchmark::State& state) {
+  auto n = 1024;
+  auto v = gen_vec(n);
+  for (auto _ : state) {
+    benchmark::DoNotOptimize(linear_search(v, n));
+  }
+}
+
+BENCHMARK(bm_linear_search); // Register benchmarking function
+BENCHMARK_MAIN();
