@@ -8,3 +8,10 @@ find_package(benchmark REQUIRED)
 add_executable(searches searches.cpp)
 target_link_libraries(searches PRIVATE benchmark::benchmark)
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=sapphirerapids -O2 -mprefer-vector-width=512")
+endif()
+
+add_executable(dot_autovec testFP16_autovec.cpp)
+add_executable(dot_bf16 testBF16.cpp)
+
