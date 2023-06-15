@@ -43,3 +43,43 @@ int test_fp16() {
 
   return 0;
 }
+
+#if 0
+#include <immintrin.h>
+
+float dotProduct(const float* a, const float* b, int size) {
+    // Make sure the size is a multiple of 16 for AVX-512
+    int size_aligned = (size + 15) & ~15;
+
+    // Create vectors for the inputs
+    __m512 vec_a = _mm512_loadu_ps(a);
+    __m512 vec_b = _mm512_loadu_ps(b);
+
+    // Perform the dot product using AVX-512 intrinsics
+    __m512 prod = _mm512_mul_ps(vec_a, vec_b);
+
+    // Horizontal add of the dot product results
+    __m256 sum = _mm512_castps512_ps256(prod);
+    __m128 hsum1 = _mm_add_ps(_mm256_castps256_ps128(sum), _mm256_extractf32x4_ps(sum, 1));
+    __m128 hsum2 = _mm_add_ps(hsum1, _mm_movehl_ps(hsum1, hsum1));
+    __m128 hsum3 = _mm_add_ss(hsum2, _mm_shuffle_ps(hsum2, hsum2, 0x55));
+
+    // Extract the dot product result
+    float result;
+    _mm_store_ss(&result, hsum3);
+
+    return result;
+}
+
+int foo() {
+    // Test the dot product function
+    float a[16] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f};
+    float b[16] = {2.0f, 4.0f, 6.0f, 8.0f, 10.0f, 12.0f, 14.0f, 16.0f, 18.0f, 20.0f, 22.0f, 24.0f, 26.0f, 28.0f, 30.0f, 32.0f};
+
+    float result = dotProduct(a, b, 16);
+    printf("Dot Product: %f\n", result);
+
+    return 0;
+}
+
+#endif
