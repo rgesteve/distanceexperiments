@@ -99,6 +99,9 @@ void dot_fp16(float dummy[16])
 
    // Copy output register to memory (memory address does not need to be aligned on any particular boundary)
    _mm512_storeu_ps((void *) res_f32, vr_f32);
+
+   float red = _mm512_reduce_add_ps(vr_f32);
+   cout << "The reduction is: [" << red << "]" << endl;
 }
  
 int main() {
