@@ -4,4 +4,4 @@ void dot(_Float16 *a, _Float16 *b, _Float16 c) {
     c+= a[i] * b[i];
 }
 
-// clang -S -march=sapphirerapids -O2 -mprefer-vector-width=512
+// clang-16 -S -emit-llvm -march=sapphirerapids -O2 -mprefer-vector-width=512
