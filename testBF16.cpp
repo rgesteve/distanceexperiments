@@ -21,6 +21,7 @@ float op4_f32[16];
 float res_f32[16];
 float res_comp_f32[16];
 
+#if 0
 void foo() {
      // Choose some sample values for arrays
    float v = sqrt(2);
@@ -103,7 +104,7 @@ void dot_fp16(float dummy[16])
    float red = _mm512_reduce_add_ps(vr_f32);
    cout << "The reduction is: [" << red << "]" << endl;
 }
-
+#endif
 
 float dotProductBF16(const float* a, const float* b, int size)
 {
@@ -112,6 +113,7 @@ float dotProductBF16(const float* a, const float* b, int size)
 
   for (int i = 0; i < 16; i++) {
        resfp32[i]   = 0.0;
+       zeros[i] = 0.0;
   }
 
    // register variables
@@ -138,23 +140,12 @@ float dotProductBF16(const float* a, const float* b, int size)
 
 #if 0
    // Copy output register to memory (memory address does not need to be aligned on any particular boundary)
-   _mm512_storeu_ps((void *) res_f32, vr_f32);
+   _mm512_storeu_ps((void *) resfp32, vr_f32);
 #endif
 
    float red = _mm512_reduce_add_ps(vr_f32);
-   //cout << "The reduction is: [" << red << "]" << endl;
-
    return red;
 }
 
-#if 0
-int main() {
-  foo();
-  dot_fp16(op1_f32);
-  bar();
 
-   cout << "Done!\n";
-   return EXIT_SUCCESS;
-}
-#endif
 
