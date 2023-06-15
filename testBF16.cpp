@@ -130,9 +130,8 @@ float dotProductBF16(const float* a, const float* b, int size)
    // Convert two float32 registers (16 values each) to one BF16 register #2 (32 values)
    __m512bh v2_f16 = _mm512_cvtne2ps_pbh(v1_f32, v2_f32);
 #endif
-   __m512bh v1_f16 = _mm512_cvtne2ps_pbh(v1_f32, vr_zeros);
+   __m512bh v1_f16 = _mm512_cvtne2ps_pbh(v1_f32, vr_zeros); // FIXME: wasting half the register, should do 32 values at a time
    __m512bh v2_f16 = _mm512_cvtne2ps_pbh(v2_f32, vr_zeros);
-
 
    // FMA: Performs dot product of BF16 registers #1 and #2. Accumulate result into one float32 output register
    vr_f32 = _mm512_dpbf16_ps(vr_f32, v1_f16, v2_f16);
