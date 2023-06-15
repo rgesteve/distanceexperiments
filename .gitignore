@@ -3,6 +3,8 @@ build/
 a.out
 *.ll
 *.s
+*.bc
+
 
 
 
