@@ -103,7 +103,51 @@ void dot_fp16(float dummy[16])
    float red = _mm512_reduce_add_ps(vr_f32);
    cout << "The reduction is: [" << red << "]" << endl;
 }
- 
+
+
+float dotProductBF16(const float* a, const float* b, int size)
+{
+  float resfp32[16];
+  float zeros[16];
+
+  for (int i = 0; i < 16; i++) {
+       resfp32[i]   = 0.0;
+  }
+
+   // register variables
+   // Load 16 float32 values into registers (data does not need to be aligned on any particular boundary)
+  __m512 v1_f32 =_mm512_loadu_ps(a);
+  __m512 v2_f32 =_mm512_loadu_ps(b);
+  __m512 vr_f32 =_mm512_loadu_ps(resfp32);
+  __m512 vr_zeros =_mm512_loadu_ps(zeros);
+
+#if 0
+   // Convert two float32 registers (16 values each) to one BF16 register #1 (32 values)
+   __m512bh v1_f16 = _mm512_cvtne2ps_pbh(v1_f32, v2_f32);
+
+   // Convert two float32 registers (16 values each) to one BF16 register #2 (32 values)
+   __m512bh v2_f16 = _mm512_cvtne2ps_pbh(v1_f32, v2_f32);
+#endif
+   __m512bh v1_f16 = _mm512_cvtne2ps_pbh(v1_f32, vr_zeros);
+   __m512bh v2_f16 = _mm512_cvtne2ps_pbh(v2_f32, vr_zeros);
+
+
+   // FMA: Performs dot product of BF16 registers #1 and #2. Accumulate result into one float32 output register
+   vr_f32 = _mm512_dpbf16_ps(vr_f32, v1_f16, v2_f16);
+   //vr_f32 = _mm512_dpbf16_ps(v3_f32, v1_f16, v2_f16);
+
+#if 0
+   // Copy output register to memory (memory address does not need to be aligned on any particular boundary)
+   _mm512_storeu_ps((void *) res_f32, vr_f32);
+#endif
+
+   float red = _mm512_reduce_add_ps(vr_f32);
+   //cout << "The reduction is: [" << red << "]" << endl;
+
+   return red;
+}
+
+#if 0
 int main() {
   foo();
   dot_fp16(op1_f32);
@@ -112,5 +156,5 @@ int main() {
    cout << "Done!\n";
    return EXIT_SUCCESS;
 }
-
+#endif
 
