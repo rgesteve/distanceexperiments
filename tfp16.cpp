@@ -1,3 +1,4 @@
+#if 0
 #include <cstdio>
 #include <stdint.h>  // this is for `uint16_t`, but that can be done using `unsigned short`s instead
 #include <immintrin.h>
@@ -29,7 +30,7 @@ int main() {
 
     return 0;
 }
-#if 0
+#else
 #include <stdio.h>
 #include <immintrin.h>
 
