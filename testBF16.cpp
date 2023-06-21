@@ -146,5 +146,10 @@ float dotProductBF16(const float* a, const float* b, int size)
    return red;
 }
 
-
-
+float dotProductCPU(const float*a, const float*b, int size) {
+  float result = 0.f;
+  for (int i = 0; i < size; i++) {
+    result += a[i] * b[i];
+  }
+  return result;
+}

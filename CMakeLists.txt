@@ -14,7 +14,7 @@ endif()
 
 #add_executable(dot_autovec testFP16_autovec.cpp)
 #add_executable(dot_bf16 testBF16.cpp)
-add_executable(bm_dot_fp16 bmfp16.cpp)
+add_executable(bm_dot_fp16 bmfp16.cpp testBF16.cpp)
 target_link_libraries(bm_dot_fp16 PRIVATE benchmark::benchmark)
 add_executable(dot_fp16 tfp16.cpp)
 add_executable(dotprod driver.cpp testFP16.cpp testBF16.cpp)

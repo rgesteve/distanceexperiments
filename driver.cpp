@@ -7,6 +7,7 @@
 
 using namespace std;
 
+#if 0
 float dotProductCPU(const float*a, const float*b, int size) {
   float result = 0.f;
   for (int i = 0; i < size; i++) {
@@ -14,6 +15,7 @@ float dotProductCPU(const float*a, const float*b, int size) {
   }
   return result;
 }
+#endif
 
 int main() {
     // Test the dot product function

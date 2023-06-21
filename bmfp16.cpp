@@ -8,6 +8,8 @@
 
 #include <benchmark/benchmark.h>
 
+#include "dp.h"
+
 float dotProductFP16(const _Float16* a, const _Float16* b, size_t size)
 {
   _Float16 zeros[size];
@@ -43,7 +45,31 @@ void BM_loop_dp_fp16(benchmark::State& state)
   }
 }
 
+void BM_loop_dp_bf16(benchmark::State& state)
+{
+    // Test the dot product function
+    float a[16] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f};
+    float b[16] = {2.0f, 4.0f, 6.0f, 8.0f, 10.0f, 12.0f, 14.0f, 16.0f, 18.0f, 20.0f, 22.0f, 24.0f, 26.0f, 28.0f, 30.0f, 32.0f};
+
+    for (auto _ : state) {
+      benchmark::DoNotOptimize(dotProductBF16(a, b, 16));
+    }
+}
+
+void BM_loop_dp_fp32(benchmark::State& state)
+{
+    // Test the dot product function
+    float a[16] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f};
+    float b[16] = {2.0f, 4.0f, 6.0f, 8.0f, 10.0f, 12.0f, 14.0f, 16.0f, 18.0f, 20.0f, 22.0f, 24.0f, 26.0f, 28.0f, 30.0f, 32.0f};
+
+    for (auto _ : state) {
+      benchmark::DoNotOptimize(dotProductCPU(a, b, 16));
+    }
+}
+
 BENCHMARK(BM_loop_dp_fp16);
+BENCHMARK(BM_loop_dp_bf16);
+BENCHMARK(BM_loop_dp_fp32);
 BENCHMARK_MAIN();
 
 #if 0
